@@ -56,3 +56,48 @@ def inicializar_agente():
     
     return agent
 
+# --- INTERFACE PRINCIPAL DO STREAMLIT ---
+
+st.title("🤖 Agente de Análise de Notas Fiscais")
+st.caption("Faça uma pergunta em linguagem natural e a IA irá analisar os dados para encontrar a resposta.")
+
+try:
+    # Tenta carregar o agente do cache ou inicializá-lo
+    agent = inicializar_agente()
+except Exception as e:
+    st.error(f"Ocorreu um erro fatal na inicialização: {e}")
+    st.stop() # Interrompe a execução se o agente não puder ser criado
+
+# Inicializa o histórico do chat na sessão se não existir
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+    # Adiciona uma mensagem de boas-vindas do assistente
+    st.session_state.messages.append({
+        "role": "assistant", 
+        "content": "Olá! Sou seu agente de análise. Como posso ajudar com os dados das suas notas fiscais hoje?"
+    })
+
+# Exibe o histórico de mensagens a cada interação
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Captura a pergunta do usuário no final da página
+if prompt := st.chat_input("Pergunte alguma coisa..."):
+    # Adiciona a pergunta do usuário ao histórico e exibe na tela
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # Gera e exibe a resposta do agente
+    with st.chat_message("assistant"):
+        with st.spinner("Analisando os dados e pensando..."):
+            try:
+                response = agent.invoke(prompt)
+                resposta_agente = response['output']
+            except Exception as e:
+                resposta_agente = f"Desculpe, ocorreu um erro ao processar sua pergunta: {e}"
+            
+            st.markdown(resposta_agente)
+            # Adiciona a resposta do agente ao histórico
+            st.session_state.messages.append({"role": "assistant", "content": resposta_agente})
