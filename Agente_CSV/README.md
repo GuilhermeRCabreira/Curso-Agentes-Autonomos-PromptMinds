@@ -10,8 +10,8 @@ Siga estes 4 passos para executar o projeto localmente.
 Clone o repositório e navegue até a pasta do projeto.
 
   ```bash
-  git clone [SEU_LINK_DO_REPOSITORIO_AQUI]
-  cd [NOME-DA-PASTA-DO-PROJETO]
+  git clone https://github.com/GuilhermeRCabreira/Curso-Agentes-Autonomos-PromptMinds.git
+  cd Agente_CSV
 ````
 ### Passo 2: Instalar as Dependências
 Crie um arquivo requirements.txt com o conteúdo abaixo:
